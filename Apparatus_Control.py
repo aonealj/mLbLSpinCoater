@@ -136,28 +136,22 @@ def getSpeed():
 
 # function to turn off the motor
 def motorShutoff():
-    offCmd = 'BLDCoff'
-    offCmdByt = bytes(offCmd, 'ascii')
+    setSpeed(0)
+    time.sleep(5)
+    sc.write(cmdsc('BLDCoff'))
 
 
-# NOTE: This only turns off the motor.
-# shutdown routine: turn rpm to 0, wait for slowdown, check 0 rpm, turnn off motor
-
-##end copy from spinCoaterControl.py
 
 # functions necessary to run the syringe pumps
 
-##Start copy from syringePumpControl
-
-# create function to creat properly formatted input for the syringe pumps
-# space b/w cmd and \r needed?
+# function to properly format input for the syringe pumps
 def cmdsp(inputChar2):
     stringInput2 = str(inputChar2) + '\r'
     return bytes(stringInput2, 'ascii')
 
 
 # function to make the command to change the diameter
-# not sure if I need a space b/w command and any floats. Currently is space
+# keep space between command code and associated inputs
 def setDIAcmd(dia):
     DIAstr = 'DIA ' + str(dia)
     return cmdsp(DIAstr)
