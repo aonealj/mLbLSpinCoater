@@ -144,36 +144,40 @@ def motorShutoff():
 
 # functions necessary to run the syringe pumps
 
-# function to properly format input for the syringe pumps
+# properly format input for the syringe pumps
 def cmdsp(inputChar2):
     stringInput2 = str(inputChar2) + '\r'
     return bytes(stringInput2, 'ascii')
 
 
-# function to make the command to change the diameter
+# command to change the diameter
 # keep space between command code and associated inputs
-def setDIAcmd(dia):
+def setDIAcmd(dia):                         #units are mm
     DIAstr = 'DIA ' + str(dia)
     return cmdsp(DIAstr)
 
 
-# function to make the command to select phase num
+# command to select phase num
 def selPHN(phaseNum):
     phaseNumStr = 'PHN ' + str(phaseNum)
     return cmdsp(phaseNumStr)
 
 
-# function to make cmd to set fuction to pumping rate type
+# set function to pumping rate type
 def funcRate():
     funcRateStr = 'FUN RAT'
     return cmdsp(funcRateStr)
 
 
-# function to make cmd to set rate w/correct units
+# set rate w/correct units
 def pumpRate(pumping_rate, pumping_units):
     pumpRateStr = 'RAT ' + str(pumping_rate) + ' ' + str(pumping_units)
     return cmdsp(pumpRateStr)
 
+
+# set rate w/o units
+def pump_rate_nu(pumping_rate):
+    return cmdsp('RAT ' + str(pumping_rate))
 
 # function to set the volume
 def setVol(pumpVol):
@@ -181,7 +185,7 @@ def setVol(pumpVol):
     return cmdsp(pumpVolStr)
 
 
-# function to set the volume units
+# function to set the volume units--this cannot be combined with the setting the units
 # see the manual for the valid inputs
 def setVolUnits(pumpVolUnits):
     pumpVolUnitsStr = 'VOL ' + str(pumpVolUnits)
@@ -203,6 +207,7 @@ def setStp():
 def runPrgmNum(PHS_num):
     PHS_num_str = 'RUN ' + str(PHS_num)
     return cmdsp(PHS_num_str)
+
 
 
 ##Code to run the cycle
