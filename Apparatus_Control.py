@@ -4,6 +4,8 @@
 import serial
 import time
 
+
+
 # establish communications ports
 
 # the com ports assignment can be found in the device manager
@@ -12,47 +14,48 @@ import time
 
 # universal timeout for all connections
 to = 5  # seconds
+
+# define function to make a new serial connection
+# place holder for an upgrade to do later.
+
 # spin coater connection
-scPort = 'COM9'
-scBaudrate = 19200
 sc = serial.Serial()
-sc.port = scPort
-sc.baudrate = scBaudrate
+sc.port = 'COM9'
+sc.baudrate = 19200
 sc.timeout = to
+sc.write_timeout = to
 sc.open()
 
 # syringe pump connections
-sp1Port = 'COM1'
-sp1Baudrate = 19200  # default for NE-1000
+sp_baudrate = 19200                 # default baudrate for NE-1000
 sp1 = serial.Serial()
-sp1.port = sp1Port
-sp1.baudrate = sp1Baudrate
+sp1.port = 'COM1'
+sp1.baudrate = sp_baudrate
 sp1.timeout = to
+sc.write_timeout = to
 sp1.open()
 
-sp2Port = 'COM24'
-sp2Baudrate = 19200
 sp2 = serial.Serial()
-sp2.port = sp2Port
-sp2.baudrate = sp2Baudrate
+sp2.port = 'COM2'
+sp2.baudrate = sp_baudrate
 sp2.timeout = to
+sc.write_timeout = to
 sp2.open()
 
-sp3Port = 'COM26'
-sp3Baudrate = 19200
 sp3 = serial.Serial()
-sp3.port = sp3Port
-sp3.baudrate = sp3Baudrate
+sp3.port = 'COM26'
+sp3.baudrate = sp_baudrate
 sp3.timeout = to
+sc.write_timeout = to
 sp3.open()
 
-sp4Port = 'COM28'
-sp4Baudrate = 19200
 sp4 = serial.Serial()
-sp4.port = sp4Port
-sp4.baudrate = sp4Baudrate
+sp4.port = 'COM28'
+sp4.baudrate = sp_baudrate
 sp4.timeout = to
+sc.write_timeout = to
 sp4.open()
+
 
 # print port information and test for open.
 print('spin coater connection')
@@ -75,16 +78,13 @@ print('syringe pump 4 (sp4) connection')
 print(sp4)
 print('connection open?', sp4.isOpen())
 
-
-##end copy from apparatusConnection.py
-
+print('Connections Run')
+input('Press enter to continue')
 
 # functions necessary to run the spin coater
 
-##start copy from spinCoaterControl.py
-
-# transform command into appropriate ascii bytes with ending characters
-# cmd structure specific to spin coater so this will not work for syringe pumps
+# trasnforms strings into appropriate ascii bytes with ending characters (\r\n)
+# cmd structure specific to spin coater
 def cmdsc(inputChar):
     stringInput = str(inputChar) + '\r\n'
     return bytes(stringInput, 'ascii')
@@ -96,7 +96,7 @@ def motorStartup(PWM=110, slope=950, intercept=550):
     PWMstr = 'SetStartPWM,' + str(PWM)
     PWMin = cmdsc(PWMstr)
     sc.write(PWMin)
-    time.sleep(1)
+    time.sleep(1)                       # pause program to ensure clean coms. Might be able to be shorter.
 
     # set motor profile slope
     slopeStr = 'SetSlope,' + str(slope)
@@ -115,6 +115,8 @@ def motorStartup(PWM=110, slope=950, intercept=550):
     onCmdByt = cmdsc(onCmd)
     sc.write(onCmdByt)
     time.sleep(1)
+
+    print('Spin Coater Motor Startup Complete')
 
 
 # function to set the motor speed
