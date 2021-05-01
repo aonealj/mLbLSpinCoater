@@ -32,28 +32,28 @@ sp1 = serial.Serial()
 sp1.port = 'COM1'
 sp1.baudrate = sp_baudrate
 sp1.timeout = to
-sc.write_timeout = to
+sp1.write_timeout = to
 sp1.open()
 
 sp2 = serial.Serial()
 sp2.port = 'COM2'
 sp2.baudrate = sp_baudrate
 sp2.timeout = to
-sc.write_timeout = to
+sp2.write_timeout = to
 sp2.open()
 
 sp3 = serial.Serial()
 sp3.port = 'COM26'
 sp3.baudrate = sp_baudrate
 sp3.timeout = to
-sc.write_timeout = to
+sp3.write_timeout = to
 sp3.open()
 
 sp4 = serial.Serial()
 sp4.port = 'COM28'
 sp4.baudrate = sp_baudrate
 sp4.timeout = to
-sc.write_timeout = to
+sp4.write_timeout = to
 sp4.open()
 
 
@@ -175,9 +175,10 @@ def pumpRate(pumping_rate, pumping_units):
     return cmdsp(pumpRateStr)
 
 
-# set rate w/o units
+# set rate w/o units (no units [nu])
 def pump_rate_nu(pumping_rate):
     return cmdsp('RAT ' + str(pumping_rate))
+
 
 # function to set the volume
 def setVol(pumpVol):
@@ -199,6 +200,7 @@ def setDir(pumpDir):
 
 
 # function for cmd to input stop set
+#probably not necessary
 def setStp():
     stpStr = 'FUN STP'
     return cmdsp(stpStr)
@@ -220,18 +222,18 @@ def motorCycle(top_speed, spin_time):
     setSpeed(0)
 
 
-# operation loop
+## operation loop
 
 num_cycles = int(input('INPUT REQUIRED--How many cycles would you like to run?: '))
 num_cycles_list = list(range(num_cycles))
 
 vol_dep = int(input('INPUT REQUIRED--Volume to deposit every step (mL): '))
-vol_withdrawl = 1  # mL, the amount to withdrawl to prevent dripping
+vol_withdraw = 0.5  # mL, the amount to withdraw to prevent dripping
 
 speed_spin = int(input('At what speed (rpm) should the spin coater spin? (default 3 krpm) ') or '3000')
-spin_dwell = 30  # seconds-> delay for how long to spin
+spin_dwell = int(input('How long should the spin coater spin (seconds)? (default 30 sec)') or '30')  # seconds-> delay for how long to spin
 
-# lead_vol =  5                            #mL--ignore only useful for autopriming of leads, which isn't in this code
+# lead_vol =  5   #mL--ignore only useful for autopriming of leads, which isn't in this code
 # prgm assumes the leads have been primed
 
 dia_input = int(input('What is the diameter (mm) of the syringe? (default 20 mm) ') or '20')
@@ -270,7 +272,7 @@ sp1.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp1.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp1.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp1.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp1.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
@@ -290,7 +292,7 @@ sp1.write(funcRate())  # make phase 1 a pump rate program
 time.sleep(1)
 sp1.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-vol_dep2 = vol_dep + vol_withdrawl
+vol_dep2 = vol_dep + vol_withdraw
 time.sleep(1)
 sp1.write(setVol(vol_dep2))  # set the volume for pumping
 time.sleep(1)
@@ -306,7 +308,7 @@ sp1.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp1.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp1.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp1.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp1.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
@@ -344,7 +346,7 @@ sp2.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp2.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp2.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp2.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp2.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
@@ -364,7 +366,7 @@ sp2.write(funcRate())  # make phase 1 a pump rate program
 time.sleep(1)
 sp2.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-vol_dep2 = vol_dep + vol_withdrawl
+vol_dep2 = vol_dep + vol_withdraw
 time.sleep(1)
 sp2.write(setVol(vol_dep2))  # set the volume for pumping
 time.sleep(1)
@@ -380,7 +382,7 @@ sp2.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp2.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp2.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp2.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp2.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
@@ -418,7 +420,7 @@ sp3.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp3.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp3.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp3.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp3.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
@@ -438,7 +440,7 @@ sp3.write(funcRate())  # make phase 1 a pump rate program
 time.sleep(1)
 sp3.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-vol_dep2 = vol_dep + vol_withdrawl
+vol_dep2 = vol_dep + vol_withdraw
 time.sleep(1)
 sp3.write(setVol(vol_dep2))  # set the volume for pumping
 time.sleep(1)
@@ -454,7 +456,7 @@ sp3.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp3.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp3.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp3.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp3.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
@@ -492,7 +494,7 @@ sp4.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp4.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp4.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp4.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp4.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
@@ -511,7 +513,7 @@ sp4.write(funcRate())  # make phase 1 a pump rate program
 time.sleep(1)
 sp4.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-vol_dep2 = vol_dep + vol_withdrawl
+vol_dep2 = vol_dep + vol_withdraw
 time.sleep(1)
 sp4.write(setVol(vol_dep2))  # set the volume for pumping
 time.sleep(1)
@@ -527,7 +529,7 @@ sp4.write(funcRate())  # make phase 2 a pump rate program
 time.sleep(1)
 sp4.write(pumpRate(rate_dep, 'MM'))  # set the pumping rate and units (mL/min)
 time.sleep(1)
-sp4.write(setVol(vol_withdrawl))  # set the volume to withdrawl
+sp4.write(setVol(vol_withdraw))  # set the volume to withdrawl
 time.sleep(1)
 sp4.write(setVolUnits('ML'))  # set vol units to mL
 time.sleep(1)
